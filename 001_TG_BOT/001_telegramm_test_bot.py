@@ -2,7 +2,7 @@ import telebot
 from telebot import types
 # import webbrowser
 
-bot = telebot.TeleBot('6986054447:AAFuVoogeGq6Fu8ZqKwwCKsewQWfCtw5NfY')
+bot = telebot.TeleBot('token')
 
 @bot.message_handler(commands=['start']) #  Добавляем стартовые кнопки
 def start(message):
