@@ -3,7 +3,7 @@ from telebot import types
 # import webbrowser
 import sqlite3
 
-#token = '6986054447:AAFuVoogeGq6Fu8ZqKwwCKsewQWfCtw5NfY'
+token = ''
 bot = telebot.TeleBot(token)
 
 @bot.message_handler(commands=['start']) #  Добавляем стартовые кнопки
