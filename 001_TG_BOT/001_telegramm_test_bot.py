@@ -1,11 +1,23 @@
 import telebot
 from telebot import types
 # import webbrowser
+import sqlite3
 
-bot = telebot.TeleBot('token')
+#token = '6986054447:AAFuVoogeGq6Fu8ZqKwwCKsewQWfCtw5NfY'
+bot = telebot.TeleBot(token)
 
 @bot.message_handler(commands=['start']) #  Добавляем стартовые кнопки
 def start(message):
+    conn = sqlite3.connect('testbd.sql')
+    cur = conn.cursor()
+    
+    cur.execute('''CREATE TABLE IF NOT EXISTS users (id int auto_increment primary key, 
+                name varchar(50) NOT NULL, pass varchar(50))''')
+    conn.commit()
+    cur.close()
+    conn.close()
+    
+    
     markup = types.ReplyKeyboardMarkup() 
     btn1 = types.KeyboardButton('info')
     btn2 = types.KeyboardButton('Привет')
