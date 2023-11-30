@@ -97,10 +97,25 @@ def edit_user_info(message):
     conn = sqlite3.connect('users.sql')
     cur = conn.cursor()
 
+     # Добавим проверку наличия таблицы
+    cur.execute('''SELECT name FROM sqlite_master WHERE type='table' AND name='users';''')
+    table_exists = cur.fetchone()
+
+    
+    if not table_exists:
+        bot.send_message(message.chat.id, 'Таблица "users" не найдена.', reply_markup=markup)
+        cur.close()
+        conn.close()
+        return
+    
     cur.execute('SELECT * FROM users WHERE id = ?', (user_id,))
     user_info = cur.fetchone()
-    cur.close()
-    conn.close()
+    
+    if not user_info:
+        bot.send_message(message.chat.id, f'Пользователь с ID {user_id} не найден.', reply_markup=markup)
+        cur.close()
+        conn.close()
+        return
 
     if user_info:
         bot.send_message(message.chat.id, f'Текущее имя: {user_info[1]}, текущий пароль: {user_info[2]}')
@@ -136,10 +151,26 @@ def delete_user_info(message):
     conn = sqlite3.connect('users.sql')
     cur = conn.cursor()
 
+    
+    # Добавим проверку наличия таблицы
+    cur.execute('''SELECT name FROM sqlite_master WHERE type='table' AND name='users';''')
+    table_exists = cur.fetchone()
+    
+    if not table_exists:
+        bot.send_message(message.chat.id, 'Таблица "users" не найдена.', reply_markup=markup)
+        cur.close()
+        conn.close()
+        return
+
     cur.execute('SELECT * FROM users WHERE id = ?', (user_id,))
     user_info = cur.fetchone()
     
-
+    if not user_info:
+        bot.send_message(message.chat.id, 'Список пользователей пуст', reply_markup=markup)
+        cur.close()
+        conn.close()
+        return
+    
     if user_info:
         bot.send_message(message.chat.id, f'Удалить пользователя с именем: {user_info[1]} и паролем: {user_info[2]}?')
         bot.send_message(message.chat.id, 'Да или Нет:')
@@ -168,8 +199,27 @@ def confirm_delete_user(message, user_info):
 def show_user_list(message):
     conn = sqlite3.connect('users.sql')
     cur = conn.cursor()
+    
+    # Добавим проверку наличия таблицы
+    cur.execute('''SELECT name FROM sqlite_master WHERE type='table' AND name='users';''')
+    table_exists = cur.fetchone()
+    
+    if not table_exists:
+        bot.send_message(message.chat.id, 'Таблица "users" не найдена.', reply_markup=markup)
+        cur.close()
+        conn.close()
+        return
+    
     cur.execute('SELECT * FROM users')
     all_users = cur.fetchall()
+    
+    if not all_users:
+        bot.send_message(message.chat.id, 'Таблица "users" пуста.', reply_markup=markup)
+        cur.close()
+        conn.close()
+        return
+    
+    
     info = ''
     for el in all_users:
         info += f'ID: {el[0]}, Имя: {el[1]}, Пароль: {el[2]}\n'
