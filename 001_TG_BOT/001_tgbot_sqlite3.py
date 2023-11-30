@@ -112,7 +112,7 @@ def edit_user_info(message):
     user_info = cur.fetchone()
     
     if not user_info:
-        bot.send_message(message.chat.id, f'Пользователь с ID {user_id} не найден.', reply_markup=markup)
+        bot.send_message(message.chat.id, 'Список пользователей пуст', reply_markup=markup)
         cur.close()
         conn.close()
         return
@@ -228,6 +228,10 @@ def show_user_list(message):
     conn.close()
 
     bot.send_message(message.chat.id, info, reply_markup=markup)
-
+    
+@bot.message_handler(func=lambda message: True)
+def handle_unknown_commands(message):
+    bot.send_message(message.chat.id, '''Извините, я не понял ваш запрос. 
+                     \nВоспользуйтесь командами или кнопками на клавиатуре.''', reply_markup=markup)
           
 bot.polling(non_stop=True) # Делает программу работающей постоянно
